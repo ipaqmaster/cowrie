@@ -44,6 +44,11 @@ class HoneyPotCommand:
         self.errorWritefn: Callable[[bytes], None] = self.protocol.pp.errReceived
         # MS-DOS style redirect handling, inside the command
         # TODO: handle >>, 2>, etc
+
+        # If args ends with 2>/dev/null omit it to avoid erroring. For now.
+        if ''.join(self.args[-3:]) == '2>/dev/null':
+            self.args = self.args[:-3]
+
         if ">" in self.args or ">>" in self.args:
             if self.args[-1] in [">", ">>"]:
                 self.errorWrite("-bash: parse error near '\\n' \n")
